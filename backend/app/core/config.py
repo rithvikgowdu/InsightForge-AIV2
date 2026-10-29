@@ -27,7 +27,7 @@ class Settings(BaseSettings):
         return v
 
     # CORS
-    CORS_ORIGINS: List[str] = [
+    CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
@@ -35,15 +35,26 @@ class Settings(BaseSettings):
         "https://*.vercel.app",
     ]
 
-    @field_validator("CORS_ORIGINS", mode="before")
+    @field_validator("CORS_ORIGINS", mode="after")
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        import json
         if isinstance(v, str):
-            if v.strip() == "*":
+            v_str = v.strip()
+            if not v_str:
                 return ["*"]
-            return [i.strip() for i in v.split(",") if i.strip()]
+            if v_str == "*":
+                return ["*"]
+            if v_str.startswith("[") and v_str.endswith("]"):
+                try:
+                    parsed = json.loads(v_str)
+                    if isinstance(parsed, list):
+                        return [str(item).strip() for item in parsed if str(item).strip()]
+                except Exception:
+                    pass
+            return [i.strip() for i in v_str.split(",") if i.strip()]
         elif isinstance(v, list):
-            return v
+            return [str(item).strip() for item in v if str(item).strip()]
         return ["*"]
 
     # External APIs
