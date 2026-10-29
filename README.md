@@ -144,7 +144,17 @@ npm run build
 
 ---
 
-## 7. Troubleshooting
+## 7. Cloud Deployment (Vercel & Render)
+
+InsightForge AI is pre-configured for cloud deployment:
+- **Backend on Render:** Auto-provisions PostgreSQL and FastAPI using [`render.yaml`](./render.yaml).
+- **Frontend on Vercel:** Next.js App Router deployed from the `frontend/` directory with [`frontend/vercel.json`](./frontend/vercel.json).
+
+For full step-by-step instructions, see the **[Production Deployment Guide](./docs/DEPLOYMENT.md)**.
+
+---
+
+## 8. Troubleshooting
 
 - **GitHub API Rate Limits:** Without a `GITHUB_TOKEN`, GitHub limits unauthenticated requests to 60/hour per IP. Add a personal access token to your `.env` file as `GITHUB_TOKEN=ghp_...` to unlock 5,000 requests/hour.
 - **LLM Unavailable:** If Ollama or hosted providers are unreachable, InsightForge AI automatically activates its deterministic heuristic pipeline. The output is clearly labeled with an amber badge and explains the confidence scoring rationale without hallucinating data.
